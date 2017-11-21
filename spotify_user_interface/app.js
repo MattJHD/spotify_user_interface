@@ -2,6 +2,7 @@ var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');	
 var MongoClient = require("mongodb").MongoClient;
 
 var client_id = '325f0c35df2a40cba5cec2c31d8c0d2e'; // Your client id
@@ -28,7 +29,18 @@ var stateKey = 'spotify_auth_state';
 var app = express();
 
 app.use(express.static(__dirname + '/public'))
-   .use(cookieParser());
+   .use(cookieParser())
+   .use(bodyParser.urlencoded({ limit: '100mb',extended: true }))
+   .use(bodyParser.json({limit: "100mb"}));
+
+// ROUTES FOR SPOTIFY_USER_INTERFACE API
+// =============================================================================
+
+MongoClient.connect("mongodb://localhost/suidb", function(error, db) {
+	if (error) console.log(error);
+	SUIDB = db;
+	console.log(db);
+})
 
 app.get('/login', function(req, res) {
 
@@ -36,7 +48,7 @@ app.get('/login', function(req, res) {
   res.cookie(stateKey, state);
 
   // your application requests authorization
-  var scope = 'user-read-private user-read-email user-read-playback-state';
+  var scope = 'user-read-private user-read-email user-read-playback-state user-read-recently-played';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
@@ -90,7 +102,7 @@ app.get('/callback', function(req, res) {
 
         // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
-          console.log(body);
+          //console.log(body);
         });
 
         // we can also pass the token to the browser to make requests from there
@@ -133,7 +145,16 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
+app.post('/add-played-tracks', function(req, res){
+  console.log(req);
+  console.log(res);
+  //if (!error && response.statusCode === 200) {
+    var params = req.body;
+    SUIDB.collection('playedtracks').insert(params, function(){
+      res.send('add-played-tracks');
+    });
+  //}
+});
 
-
-console.log('Listening on 8888');
+console.log('Your Spotify Interface on 8888');
 app.listen(8888);
