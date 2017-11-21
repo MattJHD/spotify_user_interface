@@ -2,3 +2,4 @@ node_modules/
 client_credentials/
 implicit_grant/
 
+/nbproject/private/
