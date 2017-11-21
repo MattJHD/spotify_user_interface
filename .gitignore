@@ -3,3 +3,6 @@ client_credentials/
 implicit_grant/
 
 /nbproject/private/
+nbproject/project.properties
+nbproject/project.xml
+spotify_user_interface/app.js
