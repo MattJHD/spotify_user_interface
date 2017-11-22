@@ -182,9 +182,9 @@ if (access_token) {
         var recentlyPlayedInfo = document.getElementById('recently-played-template').innerHTML,
         itemsRecentlyPlayedTemplate = Handlebars.compile(recentlyPlayedInfo),
         itemsRecentlyPlayedPlaceholder = document.getElementById('recentlyPlayed');
-        
+
         $.ajax({
-            url: 'https://api.spotify.com/v1/me/player/recently-played?limit=50',
+            url: 'https://api.spotify.com/v1/me/player/recently-played?limit=3',
             headers: {
                 'Authorization': 'Bearer ' + access_token
             },
@@ -196,7 +196,7 @@ if (access_token) {
         });
         setTimeout(function(){
             fetchRecentlyPlayedTracks();
-        }, 180000);
+        }, 60000);
     };
     fetchRecentlyPlayedTracks();   
     ///////////////recently played///////////////////
