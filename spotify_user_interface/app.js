@@ -146,14 +146,10 @@ app.get('/refresh_token', function(req, res) {
 });
 
 app.post('/add-played-tracks', function(req, res){
-  console.log(req);
-  console.log(res);
-  //if (!error && response.statusCode === 200) {
-    var params = req.body.items;
-    SUIDB.collection('playedtracks').insert(params, function(){
-      res.send('add-played-tracks');
-    });
-  //}
+  var params = req.body.items;
+  SUIDB.collection('playedtracks').insert(params, function(){
+    res.send('add-played-tracks');
+  });
 });
 
 console.log('Your Spotify Interface on 8888');
