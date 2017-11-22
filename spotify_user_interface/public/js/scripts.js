@@ -122,12 +122,6 @@ searchAlbums(document.getElementById('query').value);
 }, false);
 ///////////////covers///////////////////
 
-///////////////recently played///////////////////
-var recentlyPlayedInfo = document.getElementById('recently-played-template').innerHTML,
-itemsRecentlyPlayedTemplate = Handlebars.compile(recentlyPlayedInfo),
-itemsRecentlyPlayedPlaceholder = document.getElementById('recentlyPlayed');
-///////////////recently played///////////////////
-
 ///////////////infos logged///////////////
 var userProfileSource = document.getElementById('user-profile-template').innerHTML,
 userProfileTemplate = Handlebars.compile(userProfileSource),
@@ -184,6 +178,11 @@ if (access_token) {
 
     ///////////////recently played///////////////////
     var fetchRecentlyPlayedTracks = function(){  
+        
+        var recentlyPlayedInfo = document.getElementById('recently-played-template').innerHTML,
+        itemsRecentlyPlayedTemplate = Handlebars.compile(recentlyPlayedInfo),
+        itemsRecentlyPlayedPlaceholder = document.getElementById('recentlyPlayed');
+        
         $.ajax({
             url: 'https://api.spotify.com/v1/me/player/recently-played?limit=50',
             headers: {
