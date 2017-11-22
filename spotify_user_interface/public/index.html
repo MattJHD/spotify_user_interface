@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Example of the Authorization Code flow with Spotify</title>
+  <title>Spotify User Interface</title>
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -17,13 +17,13 @@
       <!-- infos logged -->
       <div id="user-profile"></div>
       <!-- infos logged -->
-      <!-- user infos -->
+      <!-- player infos -->
       <div>
         <h1>User infos</h1>
         <p>Get information about the user’s current playback state, including track, track progress, and active device.</p>
         <div id="userInfos"></div>
       </div>
-      <!-- user infos  -->
+      <!-- player infos  -->
       <!-- infos oAuth -->
       <div id="oauth"></div>
       <!-- infos oAuth -->
@@ -57,11 +57,18 @@
         <div id="resultsSearch"></div>
       </div>
       <!-- search datas  -->
+      <!-- recently played -->
+      <div>
+        <h1>Recently played</h1>
+        <p>Get tracks from the current user’s recently played tracks.</p>
+        <div id="recentlyPlayed"></div>
+      </div>
+      <!-- recently played  -->
 
     </div>
   </div>
 
-  <!-- user infos -->
+  <!-- player infos -->
   <script id="user-infos-template" type="text/x-handlebars-template">
     <div class="media">
       <div class="media-body">
@@ -71,6 +78,9 @@
           <dd>{{device.type}}</dd>
           <dt>Is playing :</dt>
           <dd>{{is_playing}}</dd>
+            {{#unless is_playing}}
+            <dd>false</dd>
+            {{/unless}}
           <dt>Progress_ms</dt>
           <dd>{{progress_ms}}</dd>
           <dt>Artist</dt>
@@ -79,7 +89,7 @@
       </div>
     </div>
   </script>
-  <!-- user infos -->
+  <!-- player infos -->
 
   <!-- covers -->
   <script id="results-template" type="text/x-handlebars-template">
@@ -110,6 +120,32 @@
     {{/each}}
   </script>
   <!-- search datas -->
+
+  <!-- recently played -->
+  <script id="recently-played-template" type="text/x-handlebars-template">
+    <p>Nombre de résultats : {{items.length}}</p>
+    {{#each items}}
+    <div class="media">
+        <div class="media-body">
+          <dl class="dl-horizontal">
+            <dt>Played at :</dt>
+            <dd>{{played_at}}</dd>
+            <dt>Id track :</dt>
+            <dd>{{track.id}}</dd>
+            <dt>Id artist :</dt>
+            <dd>{{track.artists.0.id}}</dd>
+            <dt>Artist name :</dt>
+            <dd>{{track.artists.0.name}}</dd>
+            <dt>Track name:</dt>
+            <dd>{{track.name}}</dd>
+            <dt>Track duartion(ms):</dt>
+            <dd>{{track.duration_ms}}</dd>
+          </dl>
+        </div>
+    </div>
+    {{/each}}
+  </script>
+  <!-- recently played -->
 
   <!-- infos logged -->
   <script id="user-profile-template" type="text/x-handlebars-template">
