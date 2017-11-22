@@ -39,7 +39,7 @@ app.use(express.static(__dirname + '/public'))
 MongoClient.connect("mongodb://localhost/suidb", function(error, db) {
 	if (error) console.log(error);
 	SUIDB = db;
-	console.log(db);
+	console.log('You are connected to spotify_user_interface_database');
 })
 
 app.get('/login', function(req, res) {
