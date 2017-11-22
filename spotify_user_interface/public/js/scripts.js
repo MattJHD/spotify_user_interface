@@ -13,6 +13,15 @@ while (e = r.exec(q)) {
 return hashParams;
 }
 
+/**
+ * Post recently played tracks to db
+ */
+function writeDBRecentlyPlayed(data){
+    const req = new XMLHttpRequest();
+    req.open('POST', 'http://localhost:8888/add-played-tracks', true);
+    req.setRequestHeader("Content-type", "application/json");
+    req.send(JSON.stringify(data));
+}
     
 
 ///////////////player infos///////////////////
@@ -25,7 +34,6 @@ var dataUserInfo = document.getElementById('user-infos-template').innerHTML,
 var dataItemInfo = document.getElementById('datas-template').innerHTML,
     itemsDataTemplate = Handlebars.compile(dataItemInfo),
     itemsDataPlaceholder = document.getElementById('resultsSearch');
-
 
 var searchDatasInfo = function (q, type) {
 $.ajax({
@@ -81,6 +89,7 @@ $.ajax({
 });
 };
 
+// Then, click on any album from the results to play 30 seconds of its first track
 results.addEventListener('click', function (e) {
 var target = e.target;
 if (target !== null && target.classList.contains('cover')) {
@@ -119,13 +128,17 @@ itemsRecentlyPlayedTemplate = Handlebars.compile(recentlyPlayedInfo),
 itemsRecentlyPlayedPlaceholder = document.getElementById('recentlyPlayed');
 ///////////////recently played///////////////////
 
+///////////////infos logged///////////////
 var userProfileSource = document.getElementById('user-profile-template').innerHTML,
 userProfileTemplate = Handlebars.compile(userProfileSource),
 userProfilePlaceholder = document.getElementById('user-profile');
+///////////////infos logged///////////////
 
+///////////////infos oAuth///////////////
 var oauthSource = document.getElementById('oauth-template').innerHTML,
 oauthTemplate = Handlebars.compile(oauthSource),
 oauthPlaceholder = document.getElementById('oauth');
+///////////////infos oAuth///////////////
 
 var params = getHashParams();
 
@@ -170,33 +183,23 @@ if (access_token) {
     ///////////////player infos///////////////////
 
     ///////////////recently played///////////////////
-    /* function writeDB(data) {
-        const req = new XMLHttpRequest();
-        req.open('POST', 'http://localhost:8888/add-played-tracks', true);
-        req.setRequestHeader("Content-type", "application/json");
-        req.onreadystatechange = function() {
-            if(req.readyState == 4 && req.status == 200) {
-                console.log(req.responseText);
-                init();
+    var fetchRecentlyPlayedTracks = function(){  
+        $.ajax({
+            url: 'https://api.spotify.com/v1/me/player/recently-played?limit=50',
+            headers: {
+                'Authorization': 'Bearer ' + access_token
+            },
+            success: function (res) {
+                itemsRecentlyPlayedPlaceholder.innerHTML = itemsRecentlyPlayedTemplate(res);
+                console.log(res);
+                writeDBRecentlyPlayed(res);
             }
-        }
-        req.send(JSON.stringify(data));
-    }; */
-
-    $.ajax({
-        url: 'https://api.spotify.com/v1/me/player/recently-played?limit=50',
-        headers: {
-            'Authorization': 'Bearer ' + access_token
-        },
-        success: function (res) {
-            itemsRecentlyPlayedPlaceholder.innerHTML = itemsRecentlyPlayedTemplate(res);
-            console.log(res);
-            const req = new XMLHttpRequest();
-            req.open('POST', 'http://localhost:8888/add-played-tracks', true);
-            req.setRequestHeader("Content-type", "application/json");
-            req.send(JSON.stringify(res));
-        }
-    });
+        });
+        setTimeout(function(){
+            fetchRecentlyPlayedTracks();
+        }, 180000);
+    };
+    fetchRecentlyPlayedTracks();   
     ///////////////recently played///////////////////
 
 } else {
@@ -205,19 +208,21 @@ if (access_token) {
     $('#loggedin').hide();
 }
 
-document.getElementById('obtain-new-token').addEventListener('click', function () {
-    $.ajax({
-    url: '/refresh_token',
-    data: {
-        'refresh_token': refresh_token
-    }
-    }).done(function (data) {
-    access_token = data.access_token;
-    oauthPlaceholder.innerHTML = oauthTemplate({
-        access_token: access_token,
-        refresh_token: refresh_token
-    });
-    });
-}, false);
+    document.getElementById('obtain-new-token').addEventListener('click', function () {
+        $.ajax({
+        url: '/refresh_token',
+        data: {
+            'refresh_token': refresh_token
+        }
+        }).done(function (data) {
+        access_token = data.access_token;
+        oauthPlaceholder.innerHTML = oauthTemplate({
+            access_token: access_token,
+            refresh_token: refresh_token
+        });
+        });
+    }, false);
+
+  
 }
 
