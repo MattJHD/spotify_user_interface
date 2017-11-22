@@ -39,7 +39,7 @@ app.use(express.static(__dirname + '/public'))
 MongoClient.connect("mongodb://localhost/suidb", function(error, db) {
 	if (error) console.log(error);
 	SUIDB = db;
-	console.log(db);
+	console.log('You are connected to spotify_user_interface_database');
 })
 
 app.get('/login', function(req, res) {
@@ -149,7 +149,7 @@ app.post('/add-played-tracks', function(req, res){
   console.log(req);
   console.log(res);
   //if (!error && response.statusCode === 200) {
-    var params = req.body;
+    var params = req.body.items;
     SUIDB.collection('playedtracks').insert(params, function(){
       res.send('add-played-tracks');
     });
