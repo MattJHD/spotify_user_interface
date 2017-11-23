@@ -160,5 +160,20 @@ app.post('/add-played-tracks', function(req, res){
   res.render('index');
 }); */
 
+
+app.get("/dataTracks", function(req, res){
+    SUIDB.collection('playedtracks').aggregate([
+        { $group:
+            { 
+                _id: { track_id: "$track.id", track_name: "$track.name", artist_name: "$track.artists.name", played_at: "$played_at"},
+                somme: {$sum: 1}
+            }
+        }
+    ]).toArray(function (err,docs){
+        //console.log(docs);
+        console.log("salut");
+    });  
+ });
+
 console.log('Your Spotify Interface on 8888');
 app.listen(8888);
