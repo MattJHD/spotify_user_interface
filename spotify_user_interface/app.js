@@ -192,6 +192,16 @@ app.get("/dataTracks", function(req, res){
         res.json(docs);
     });  
  });
+ 
+app.get("/oneTrackFeatures", function(req, res){
+    var id = req.query.idTrack;
+    console.log(id);
+    SUIDB.collection('features').findOne({
+        id: id.toString()
+    }, function (err,docs){
+        res.json(docs);
+    });
+ });
 
 console.log('Your Spotify Interface on 8888');
 app.listen(8888);
