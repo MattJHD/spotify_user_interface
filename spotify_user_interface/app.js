@@ -28,8 +28,12 @@ var stateKey = 'spotify_auth_state';
 
 var app = express();
 
-app.use(express.static(__dirname + '/public'))
-   .use(cookieParser())
+//app.set(__dirname + '/public');
+//app.set('view engine', 'handlebars');
+
+app.use(express.static(__dirname + '/public'));
+
+app.use(cookieParser())
    .use(bodyParser.urlencoded({ limit: '100mb',extended: true }))
    .use(bodyParser.json({limit: "100mb"}));
 
@@ -151,6 +155,10 @@ app.post('/add-played-tracks', function(req, res){
     res.send('add-played-tracks');
   });
 });
+
+/* app.get('/test', function(req, res){
+  res.render('index');
+}); */
 
 console.log('Your Spotify Interface on 8888');
 app.listen(8888);
