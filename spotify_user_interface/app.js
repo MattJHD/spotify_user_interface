@@ -170,8 +170,8 @@ app.get("/dataTracks", function(req, res){
             }
         }
     ]).toArray(function (err,docs){
-        //console.log(docs);
-        console.log("salut");
+        //Le docs contient ce que la requète renvoie
+        
     });  
  });
 
