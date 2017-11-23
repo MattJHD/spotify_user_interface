@@ -1,3 +1,5 @@
+var tracks;
+
 /**
  * Obtains parameters from the hash of the URL
  * @return Object
@@ -12,6 +14,82 @@ while (e = r.exec(q)) {
 return hashParams;
 }
 
+function init(){
+    tracks = getAllTracksPlayed();
+    console.log(tracks);
+    if (tracks.length){
+        displayTracks(tracks)
+    }else{
+        console.log('no tracks in database')
+    }
+}
+
+function displayTracks(tracks){
+    var allPlayed = document.getElementById("allPlayed");
+    for(var i=0; i<tracks.length; i++){
+        var track = document.createElement("div");
+        track.id = tracks[i]._id.track_id;
+        track.className = tracks[i]._id.track_id;
+        track.innerText = "Track : " +tracks[i]._id.track_name + " | Artist : " + tracks[i]._id.artist_name[0] + " | " + tracks[i]._id.played_at;
+        track.addEventListener("click", function(){
+            //getFeatures(this.id);
+            alert(this.id);
+        });
+        allPlayed.appendChild(track);
+    }
+}
+
+function getAllTracksPlayed(){
+    const req = new XMLHttpRequest();
+	req.open('GET', 'http://localhost:8888/dataTracks', false);
+	req.send(null);
+
+	if (req.status === 200) {
+		return JSON.parse(req.responseText);
+	} else {
+		console.log("Status de la réponse: %d (%s)", req.status, req.statusText);
+	}
+}
+
+function createGraph(data) {
+    var dates = [];
+    var sum = [];
+	var trackName = [];
+	for (var i = 0; i < data.length; i++) {
+			dates.push(data[i]._id.played_at);
+            sum.push(Math.round(data[i].somme.toString()));
+            trackName.push(data[i].track_id);
+	}
+	var canvas = document.createElement("canvas");
+	canvas.id = "trackSum";
+	graphBar.innerHTML = "";
+	graphBar.appendChild(canvas);
+	var ctx = canvas.getContext('2d');
+	var myChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: trackName,
+			datasets: [{
+				label: '% nombre d\'écoute',
+				data:sum,
+				backgroundColor: hexToRgbA(currentColor)
+
+			}]
+		},
+		options: {
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero: true,
+						max: 100
+					}
+				}]
+			}
+				// responsive:false
+			}
+		});
+}
+
 /**
  * Post recently played tracks to db
  */
@@ -21,8 +99,6 @@ function writeDBRecentlyPlayed(data){
     req.setRequestHeader("Content-type", "application/json");
     req.send(JSON.stringify(data));
 }
-
-
 
 var params = getHashParams();
 
@@ -55,13 +131,17 @@ if (error) {
 alert('There was an error during the authentication');
 } else {
     if (access_token) {
-        
+     
+    ///////////////API PAGE///////////////////
+
         // render oauth info
         oauthPlaceholder.innerHTML = oauthTemplate({
         access_token: access_token,
         refresh_token: refresh_token
         });
 
+        $('#interfaceAPI').show();
+        $('#interfaceCharts').hide();
         document.getElementById('dataApi').addEventListener('click', function () {
             $('#interfaceAPI').show();
             $('#interfaceCharts').hide();
@@ -106,7 +186,6 @@ alert('There was an error during the authentication');
                 },
                 success: function (response) {
                     itemsUserInfoPlaceholder.innerHTML = itemsUserInfoTemplate(response);
-                    console.log(response);
                 }
             });
             setTimeout(function(){
@@ -232,6 +311,12 @@ alert('There was an error during the authentication');
         };
         fetchRecentlyPlayedTracks();   
         ///////////////recently played///////////////////
+
+    ///////////////CHARTS PAGE///////////////////
+
+        //initialisation des tracks et affichage
+        init();
+
 
     } else {
         // render initial screen

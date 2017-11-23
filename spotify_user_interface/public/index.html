@@ -77,11 +77,16 @@
             </div>
             <!-- recently played  -->
 
-          </div><!-- end apiInterface-->
+          </div><!-- end interfaceAPI-->
 
           <div id="interfaceCharts">
               <h1>Charts</h1>
-          </div> <!-- end charts-->
+              <div>
+                  <h1>Tracks played</h1>
+                  <p>Get all the tracks played.</p>
+                  <div id="allPlayed"></div>
+              </div>
+          </div> <!-- end interfaceCharts-->
 
         </div><!-- end loggedin-->
         
@@ -213,7 +218,22 @@
           {{/each}}
         </script>
         <!-- recently played -->
-  </div> <!-- end interface API-->
+
+        <!-- all-played-template -->
+        <script id="all-played-template" type="text/x-handlebars-template">
+          <p>Nombre de tracks : {{items.length}}</p>
+          {{#each items}}
+          <div class="media">
+              <div class="media-body">
+                <dl class="dl-horizontal">
+                  <dt>Played at :</dt>
+                  <dd>{{played_at}}</dd>
+                </dl>
+              </div>
+          </div>
+          {{/each}}
+        </script>
+        <!-- all-played-template -->
 
   
   
