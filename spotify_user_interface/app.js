@@ -163,11 +163,6 @@ app.post('/features-tracks', function(req, res){
   });
 });
 
-/* app.get('/test', function(req, res){
-  res.render('index');
-}); */
-
-
 app.get("/dataTracks", function(req, res){
     SUIDB.collection('playedtracks').aggregate([
         { $group:

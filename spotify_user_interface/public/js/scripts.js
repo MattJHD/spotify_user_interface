@@ -1,5 +1,8 @@
-var tracks;
+var tracks, graph;
 
+document.addEventListener("DOMContentLoaded", function(){
+    graph = document.getElementById("graph");
+});
 /**
  * Obtains parameters from the hash of the URL
  * @return Object
@@ -38,11 +41,11 @@ function displayTracks(tracks){
         track.className = tracks[i]._id.track_id;
         track.innerText = "Track : " +tracks[i]._id.track_name + " | Artist : " + tracks[i]._id.artist_name[0] + " | " + tracks[i]._id.played_at;
         track.addEventListener("click", function(){
-            //getFeatures(this.id);
-            alert(this.id);
+            getOneFeature(this.id);
+            //alert(this.id);
             
         });
-        getFeaturesForTrack(tracks[i]._id.track_id);
+        //getFeaturesForTrack(tracks[i]._id.track_id);
         allPlayed.appendChild(track);
     }
 }
@@ -59,6 +62,65 @@ function getAllTracksPlayed(){
 	}
 }
 
+function getOneFeature(idtrack){
+    const req = new XMLHttpRequest();
+	req.open('GET', 'http://localhost:8888/oneTrackFeatures?idTrack=' + idtrack, false);
+	req.send(null);
+
+	if (req.status === 200) {
+		console.log(JSON.parse(req.responseText));
+		displayInfo(JSON.parse(req.responseText));
+	} else {
+		console.log("Status de la réponse: %d (%s)", req.status, req.statusText);
+	}
+}
+
+function displayInfo(data){
+    var idTrack = document.getElementById("idTrack");
+    idTrack.innerText = "";
+    generateChart(data);
+}
+
+function generateChart(data){
+    console.log(data);
+    var canvas = document.createElement("canvas");
+    canvas.id = "radar-chart";
+    graph.innerHTML = "";
+    graph.appendChild(canvas);
+    //var ctx = canvas.getContext("radar-chart");
+    var chart = new Chart("radar-chart", {
+        type: 'radar',
+        data: {
+            labels: ["acousticness", "danceability", "energy", "liveness", "loudness", "speechiness", "tempo"],
+            datasets: [
+                {
+                    label: "",
+                    fill: true,
+                    backgroundColor: "rgba(179,181,198,0.2)",
+                    borderColor: "rgba(179,181,198,1)",
+                    pointBorderColor: "#fff",
+                    pointBackgroundColor: "rgba(179,181,198,1)",
+                    data: [
+                        JSON.parse(data.acousticness*100),
+                        JSON.parse(data.danceability*100),
+                        JSON.parse(data.energy*100),
+                        JSON.parse(data.liveness*100),
+                        JSON.parse(Math.abs(data.loudness)),
+                        JSON.parse(data.speechiness*100),
+                        JSON.parse(data.tempo)
+                    ]        
+                } 
+            ]
+        },
+        options: {
+            title: {
+              display: true,
+              text: 'Features of track : ' + data.id
+            }
+        }
+    });
+};
+
 function getFeaturesForTrack(idtrack){
     const req = new XMLHttpRequest();
     
@@ -71,45 +133,6 @@ function getFeaturesForTrack(idtrack){
 	} else {
 		console.log("Status de la réponse: %d (%s)", req.status, req.statusText);
 	}
-}
-
-function createGraph(data) {
-    var dates = [];
-    var sum = [];
-	var trackName = [];
-	for (var i = 0; i < data.length; i++) {
-			dates.push(data[i]._id.played_at);
-            sum.push(Math.round(data[i].somme.toString()));
-            trackName.push(data[i].track_id);
-	}
-	var canvas = document.createElement("canvas");
-	canvas.id = "trackSum";
-	graphBar.innerHTML = "";
-	graphBar.appendChild(canvas);
-	var ctx = canvas.getContext('2d');
-	var myChart = new Chart(ctx, {
-		type: 'line',
-		data: {
-			labels: trackName,
-			datasets: [{
-				label: '% nombre d\'écoute',
-				data:sum,
-				backgroundColor: hexToRgbA(currentColor)
-
-			}]
-		},
-		options: {
-			scales: {
-				yAxes: [{
-					ticks: {
-						beginAtZero: true,
-						max: 100
-					}
-				}]
-			}
-				// responsive:false
-			}
-		});
 }
 
 /**
