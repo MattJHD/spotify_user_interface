@@ -174,6 +174,19 @@ app.get("/dataTracks", function(req, res){
         
     });  
  });
+ 
+ app.get("/idDataTrack", function(req, res){
+    SUIDB.collection('playedtracks').aggregate([
+        { $group:
+            { 
+                _id: "$track.id"
+            }
+        }
+    ]).toArray(function (err,docs){
+        //Le docs contient ce que la requète renvoie
+        res.json(docs);
+    });  
+ });
 
 console.log('Your Spotify Interface on 8888');
 app.listen(8888);
