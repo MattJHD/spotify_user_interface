@@ -8,199 +8,215 @@
 </head>
 
 <body>
-  <div class="container">
-    <div id="login">
-      <h1>Spotify Datas interface</h1>
-      <a href="/login" class="btn btn-primary">Log in with Spotify</a>
-    </div>
-    <div id="loggedin">
-      <!-- infos logged -->
-      <div>
-        <h1>User infos</h1>
-        <div id="user-profile"></div>
-      </div>
-      <!-- infos logged -->
-      <!-- player infos -->
-      <div>
-        <h1>Player infos</h1>
-        <p>Get information about the user’s current playback state, including track, track progress, and active device.</p>
-        <div id="userInfos"></div>
-      </div>
-      <!-- player infos  -->
-      <!-- infos oAuth -->
-      <div>
-        <h1>oAuth infos</h1>
-        <div id="oauth"></div>
-      </div>
-      <!-- infos oAuth -->
-      <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
-      <!-- covers -->
-      <div>
-        <h1>Search for an Artist</h1>
-        <p>Type an artist name and click on "Search". Then, click on any album from the results to play 30 seconds of its first
-          track.</p>
-        <form id="search-form">
-          <input type="text" id="query" value="" class="form-control" placeholder="Type an Artist Name" />
-          <input type="submit" id="search" class="btn btn-primary" value="Search" />
-        </form>
-        <div id="results"></div>
-      </div>
-      <!-- covers -->
-      <!-- search datas -->
-      <div>
-        <h1>Search for an Item</h1>
-        <p>Get Spotify catalog information about artists, albums, tracks or playlists that match a keyword string.</p>
-        <form id="search-item-form">
-          <input type="text" id="queryItem" value="" class="form-control" placeholder="Artist, album, track..." />
-          <select id="queryType">
-            <option value="artist">artist</option>
-            <option value="album">album</option>
-            <option value="playlist">playlist</option>
-            <option value="track">track</option>
-          </select>
-          <input type="submit" id="searchByItem" class="btn btn-primary" value="Search" />
-        </form>
-        <div id="resultsSearch"></div>
-      </div>
-      <!-- search datas  -->
-      <!-- recently played -->
-      <div>
-        <h1>Recently played</h1>
-        <p>Get tracks from the current user’s recently played tracks.</p>
-        <div id="recentlyPlayed"></div>
-      </div>
-      <!-- recently played  -->
+  <button class="btn btn-success"id="dataApi">Interface API</button>
+  <button class="btn btn-primary"id="dataCharts">Charts</button>
 
-    </div>
-  </div>
-
-
-
-  <!-- infos logged -->
-  <script id="user-profile-template" type="text/x-handlebars-template">
-    <div class="media">
-      <div class="pull-left">
-        <img class="media-object" width="150" src="{{images.0.url}}" />
-      </div>
-      <div class="media-body">
-        <dl class="dl-horizontal">
-          <dt>Display name :</dt>
-          <dd class="clearfix">{{display_name}}</dd>
-          <dt>Id :</dt>
-          <dd>{{id}}</dd>
-          <dt>Email :</dt>
-          <dd>{{email}}</dd>
-          <dt>Spotify URI :</dt>
-          <dd>
-            <a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a>
-          </dd>
-          <dt>Link :</dt>
-          <dd>
-            <a href="{{href}}">{{href}}</a>
-          </dd>
-          <dt>Profile Image :</dt>
-          <dd class="clearfix">
-            <a href="{{images.0.url}}">{{images.0.url}}</a>
-          </dd>
-          <dt>Country :</dt>
-          <dd>{{country}}</dd>
-        </dl>
-      </div>
-    </div>
-  </script>
-  <!-- infos logged -->
-
-  <!-- player infos -->
-  <script id="user-infos-template" type="text/x-handlebars-template">
-    <div class="media">
-      <div class="media-body">
-        <dl class="dl-horizontal">
-          <dt>Device :</dt>
-          <dd>{{device.name}}</dd>
-          <dd>{{device.type}}</dd>
-          <dt>Is playing :</dt>
-          <dd>{{is_playing}}</dd>
-            {{#unless is_playing}}
-            <dd>false</dd>
-            {{/unless}}
-          <dt>Progress_ms :</dt>
-          <dd>{{progress_ms}}</dd>
-          <dt>Artist :</dt>
-          <dd>{{item.artists.0.name}}</dd>
-          <dt>Track :</dt>
-          <dd>{{item.name}}</dd>
-        </dl>
-      </div>
-    </div>
-  </script>
-  <!-- player infos -->
-
-  <!-- infos oAuth -->
-  <script id="oauth-template" type="text/x-handlebars-template">
-    <dl class="dl-horizontal">
-      <dt>Access token :</dt>
-      <dd class="text-overflow">{{access_token}}</dd>
-      <dt>Refresh token :</dt>
-      <dd class="text-overflow">{{refresh_token}}></dd>
-    </dl>
-  </script>
-  <!-- infos oAuth -->
-
-  <!-- covers -->
-  <script id="results-template" type="text/x-handlebars-template">
-    {{#each albums.items}}
-    <div style="background-image:url({{images.0.url}})" data-album-id="{{id}}" class="cover"></div>
-    {{/each}}
-  </script>
-  <!-- covers -->
-
-  <!-- search datas -->
-  <script id="datas-template" type="text/x-handlebars-template">
-    <p>Nombre de résultats : {{tracks.items.length}}</p>
-    {{#each tracks.items}}
-    <div class="media">
-        <div class="media-body">
-          <dl class="dl-horizontal">
-            <dt>Id track :</dt>
-            <dd>{{id}}</dd>
-            <dt>Id artist :</dt>
-            <dd>{{artists.0.id}}</dd>
-            <dt>Artist name :</dt>
-            <dd>{{artists.0.name}}</dd>
-            <dt>Track duration :</dt>
-            <dd>{{duration_ms}}</dd>
-          </dl>
+  
+        <div class="container">
+          <div id="login">
+            <h1>Spotify Datas interface</h1>
+            <a href="/login" class="btn btn-primary">Log in with Spotify</a>
+          </div>
         </div>
-    </div>
-    {{/each}}
-  </script>
-  <!-- search datas -->
+        <div id="loggedin">
+          <div id="interfaceAPI">
+            <!-- infos logged -->
+            <div>
+              <h1>User infos</h1>
+              <div id="user-profile"></div>
+            </div>
+            <!-- infos logged -->
+            <!-- player infos -->
+            <div>
+              <h1>Player infos</h1>
+              <p>Get information about the user’s current playback state, including track, track progress, and active device.</p>
+              <div id="userInfos"></div>
+            </div>
+            <!-- player infos  -->
+            <!-- infos oAuth -->
+            <div>
+              <h1>oAuth infos</h1>
+              <div id="oauth"></div>
+            </div>
+            <!-- infos oAuth -->
+            <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
+            <!-- covers -->
+            <div>
+              <h1>Search for an Artist</h1>
+              <p>Type an artist name and click on "Search". Then, click on any album from the results to play 30 seconds of its first
+                track.</p>
+              <form id="search-form">
+                <input type="text" id="query" value="" class="form-control" placeholder="Type an Artist Name" />
+                <input type="submit" id="search" class="btn btn-primary" value="Search" />
+              </form>
+              <div id="results"></div>
+            </div>
+            <!-- covers -->
+            <!-- search datas -->
+            <div>
+              <h1>Search for an Item</h1>
+              <p>Get Spotify catalog information about artists, albums, tracks or playlists that match a keyword string.</p>
+              <form id="search-item-form">
+                <input type="text" id="queryItem" value="" class="form-control" placeholder="Artist, album, track..." />
+                <select id="queryType">
+                  <option value="artist">artist</option>
+                  <option value="album">album</option>
+                  <option value="playlist">playlist</option>
+                  <option value="track">track</option>
+                </select>
+                <input type="submit" id="searchByItem" class="btn btn-primary" value="Search" />
+              </form>
+              <div id="resultsSearch"></div>
+            </div>
+            <!-- search datas  -->
+            <!-- recently played -->
+            <div>
+              <h1>Recently played</h1>
+              <p>Get tracks from the current user’s recently played tracks.</p>
+              <div id="recentlyPlayed"></div>
+            </div>
+            <!-- recently played  -->
 
-  <!-- recently played -->
-  <script id="recently-played-template" type="text/x-handlebars-template">
-    <p>Nombre de résultats : {{items.length}}</p>
-    {{#each items}}
-    <div class="media">
-        <div class="media-body">
+          </div><!-- end apiInterface-->
+
+          <div id="interfaceCharts">
+              <h1>Charts</h1>
+          </div> <!-- end charts-->
+
+        </div><!-- end loggedin-->
+        
+      
+      
+      
+        <!-- infos logged -->
+        <script id="user-profile-template" type="text/x-handlebars-template">
+          <div class="media">
+            <div class="pull-left">
+              <img class="media-object" width="150" src="{{images.0.url}}" />
+            </div>
+            <div class="media-body">
+              <dl class="dl-horizontal">
+                <dt>Display name :</dt>
+                <dd class="clearfix">{{display_name}}</dd>
+                <dt>Id :</dt>
+                <dd>{{id}}</dd>
+                <dt>Email :</dt>
+                <dd>{{email}}</dd>
+                <dt>Spotify URI :</dt>
+                <dd>
+                  <a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a>
+                </dd>
+                <dt>Link :</dt>
+                <dd>
+                  <a href="{{href}}">{{href}}</a>
+                </dd>
+                <dt>Profile Image :</dt>
+                <dd class="clearfix">
+                  <a href="{{images.0.url}}">{{images.0.url}}</a>
+                </dd>
+                <dt>Country :</dt>
+                <dd>{{country}}</dd>
+              </dl>
+            </div>
+          </div>
+        </script>
+        <!-- infos logged -->
+      
+        <!-- player infos -->
+        <script id="user-infos-template" type="text/x-handlebars-template">
+          <div class="media">
+            <div class="media-body">
+              <dl class="dl-horizontal">
+                <dt>Device :</dt>
+                <dd>{{device.name}}</dd>
+                <dd>{{device.type}}</dd>
+                <dt>Is playing :</dt>
+                <dd>{{is_playing}}</dd>
+                  {{#unless is_playing}}
+                  <dd>false</dd>
+                  {{/unless}}
+                <dt>Progress_ms :</dt>
+                <dd>{{progress_ms}}</dd>
+                <dt>Artist :</dt>
+                <dd>{{item.artists.0.name}}</dd>
+                <dt>Track :</dt>
+                <dd>{{item.name}}</dd>
+              </dl>
+            </div>
+          </div>
+        </script>
+        <!-- player infos -->
+      
+        <!-- infos oAuth -->
+        <script id="oauth-template" type="text/x-handlebars-template">
           <dl class="dl-horizontal">
-            <dt>Played at :</dt>
-            <dd>{{played_at}}</dd>
-            <dt>Id track :</dt>
-            <dd>{{track.id}}</dd>
-            <dt>Id artist :</dt>
-            <dd>{{track.artists.0.id}}</dd>
-            <dt>Artist name :</dt>
-            <dd>{{track.artists.0.name}}</dd>
-            <dt>Track name:</dt>
-            <dd>{{track.name}}</dd>
-            <dt>Track duartion(ms):</dt>
-            <dd>{{track.duration_ms}}</dd>
+            <dt>Access token :</dt>
+            <dd class="text-overflow">{{access_token}}</dd>
+            <dt>Refresh token :</dt>
+            <dd class="text-overflow">{{refresh_token}}></dd>
           </dl>
-        </div>
-    </div>
-    {{/each}}
-  </script>
-  <!-- recently played -->
+        </script>
+        <!-- infos oAuth -->
+      
+        <!-- covers -->
+        <script id="results-template" type="text/x-handlebars-template">
+          {{#each albums.items}}
+          <div style="background-image:url({{images.0.url}})" data-album-id="{{id}}" class="cover"></div>
+          {{/each}}
+        </script>
+        <!-- covers -->
+      
+        <!-- search datas -->
+        <script id="datas-template" type="text/x-handlebars-template">
+          <p>Nombre de résultats : {{tracks.items.length}}</p>
+          {{#each tracks.items}}
+          <div class="media">
+              <div class="media-body">
+                <dl class="dl-horizontal">
+                  <dt>Id track :</dt>
+                  <dd>{{id}}</dd>
+                  <dt>Id artist :</dt>
+                  <dd>{{artists.0.id}}</dd>
+                  <dt>Artist name :</dt>
+                  <dd>{{artists.0.name}}</dd>
+                  <dt>Track duration :</dt>
+                  <dd>{{duration_ms}}</dd>
+                </dl>
+              </div>
+          </div>
+          {{/each}}
+        </script>
+        <!-- search datas -->
+      
+        <!-- recently played -->
+        <script id="recently-played-template" type="text/x-handlebars-template">
+          <p>Nombre de résultats : {{items.length}}</p>
+          {{#each items}}
+          <div class="media">
+              <div class="media-body">
+                <dl class="dl-horizontal">
+                  <dt>Played at :</dt>
+                  <dd>{{played_at}}</dd>
+                  <dt>Id track :</dt>
+                  <dd>{{track.id}}</dd>
+                  <dt>Id artist :</dt>
+                  <dd>{{track.artists.0.id}}</dd>
+                  <dt>Artist name :</dt>
+                  <dd>{{track.artists.0.name}}</dd>
+                  <dt>Track name:</dt>
+                  <dd>{{track.name}}</dd>
+                  <dt>Track duartion(ms):</dt>
+                  <dd>{{track.duration_ms}}</dd>
+                </dl>
+              </div>
+          </div>
+          {{/each}}
+        </script>
+        <!-- recently played -->
+  </div> <!-- end interface API-->
+
+  
+  
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
   <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>

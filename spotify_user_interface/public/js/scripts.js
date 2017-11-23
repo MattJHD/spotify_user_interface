@@ -55,10 +55,23 @@ if (error) {
 alert('There was an error during the authentication');
 } else {
     if (access_token) {
+        
         // render oauth info
         oauthPlaceholder.innerHTML = oauthTemplate({
         access_token: access_token,
         refresh_token: refresh_token
+        });
+
+        document.getElementById('dataApi').addEventListener('click', function () {
+            $('#interfaceAPI').show();
+            $('#interfaceCharts').hide();
+            console.log('okkk');
+        });
+        
+        document.getElementById('dataCharts').addEventListener('click', function () {
+            $('#interfaceAPI').hide();
+            $('#interfaceCharts').show();
+            console.log('poooo');
         });
 
         ///////////////infos logged///////////////
@@ -224,6 +237,8 @@ alert('There was an error during the authentication');
         // render initial screen
         $('#login').show();
         $('#loggedin').hide();
+        $('#dataApi').hide();
+        $('#dataCharts').hide();
     }
 
 }

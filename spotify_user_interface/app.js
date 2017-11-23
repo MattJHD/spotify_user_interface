@@ -170,8 +170,7 @@ app.get("/dataTracks", function(req, res){
             }
         }
     ]).toArray(function (err,docs){
-        //Le docs contient ce que la requète renvoie
-        
+        res.json(docs);
     });  
  });
  
@@ -183,7 +182,6 @@ app.get("/dataTracks", function(req, res){
             }
         }
     ]).toArray(function (err,docs){
-        //Le docs contient ce que la requète renvoie
         res.json(docs);
     });  
  });
