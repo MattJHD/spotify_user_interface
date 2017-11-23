@@ -156,6 +156,13 @@ app.post('/add-played-tracks', function(req, res){
   });
 });
 
+app.post('/features-tracks', function(req, res){
+  var params = req.body;
+  SUIDB.collection('features').insert(params, function(){
+    res.send('add-features');
+  });
+});
+
 /* app.get('/test', function(req, res){
   res.render('index');
 }); */

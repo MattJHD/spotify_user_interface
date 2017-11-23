@@ -14,6 +14,12 @@ while (e = r.exec(q)) {
 return hashParams;
 }
 
+var params = getHashParams();
+
+var access_token = params.access_token,
+refresh_token = params.refresh_token,
+error = params.error;
+
 function init(){
     tracks = getAllTracksPlayed();
     console.log(tracks);
@@ -34,7 +40,9 @@ function displayTracks(tracks){
         track.addEventListener("click", function(){
             //getFeatures(this.id);
             alert(this.id);
+            
         });
+        getFeaturesForTrack(tracks[i]._id.track_id);
         allPlayed.appendChild(track);
     }
 }
@@ -46,6 +54,20 @@ function getAllTracksPlayed(){
 
 	if (req.status === 200) {
 		return JSON.parse(req.responseText);
+	} else {
+		console.log("Status de la réponse: %d (%s)", req.status, req.statusText);
+	}
+}
+
+function getFeaturesForTrack(idtrack){
+    const req = new XMLHttpRequest();
+    
+    req.open('GET', 'https://api.spotify.com/v1/audio-features/' + idtrack, false);
+    req.setRequestHeader("Authorization", 'Bearer ' + access_token);
+	req.send(null);
+
+	if (req.status === 200) {
+		writeOnDB(JSON.parse(req.responseText), "features-tracks");
 	} else {
 		console.log("Status de la réponse: %d (%s)", req.status, req.statusText);
 	}
@@ -93,18 +115,13 @@ function createGraph(data) {
 /**
  * Post recently played tracks to db
  */
-function writeDBRecentlyPlayed(data){
+function writeOnDB(data, url){
     const req = new XMLHttpRequest();
-    req.open('POST', 'http://localhost:8888/add-played-tracks', true);
+    req.open('POST', 'http://localhost:8888/' + url, true);
     req.setRequestHeader("Content-type", "application/json");
     req.send(JSON.stringify(data));
 }
 
-var params = getHashParams();
-
-var access_token = params.access_token,
-refresh_token = params.refresh_token,
-error = params.error;
 
 ///////////////infos oAuth///////////////
 var oauthSource = document.getElementById('oauth-template').innerHTML,
@@ -196,7 +213,6 @@ alert('There was an error during the authentication');
         ///////////////player infos///////////////////
 
         ///////////////covers///////////////////
-        // find template and compile it
         var templateSource = document.getElementById('results-template').innerHTML,
         template = Handlebars.compile(templateSource),
         resultsPlaceholder = document.getElementById('results'),
@@ -302,7 +318,7 @@ alert('There was an error during the authentication');
                 success: function (res) {
                     itemsRecentlyPlayedPlaceholder.innerHTML = itemsRecentlyPlayedTemplate(res);
                     console.log(res);
-                    writeDBRecentlyPlayed(res);
+                    writeOnDB(res, "add-played-tracks");
                 }
             });
             setTimeout(function(){
