@@ -167,7 +167,7 @@ app.get("/dataTracks", function(req, res){
     SUIDB.collection('playedtracks').aggregate([
         { $group:
             { 
-                _id: { track_id: "$track.id", track_name: "$track.name", artist_name: "$track.artists.name", played_at: "$played_at"},
+                _id: { track_id: "$track.id", track_name: "$track.name", artist_name: "$track.artists.name", played_at: "$played_at", covers: "track.album.images"},
                 somme: {$sum: 1}
             }
         }
@@ -197,6 +197,29 @@ app.get("/oneTrackFeatures", function(req, res){
         res.json(docs);
     });
  });
-
+ 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ // DEBUT DES TRAITEMENTS SUR LA MASSE /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ app.get("/averageListenedTracks", function(req, res){
+    SUIDB.collection('features').aggregate([
+        { $group:
+            { 
+                _id: {track_id: "$id", },
+                avg_acousticness : {$avg: "$acousticness"},
+                avg_danceability : {$avg: "$danceability"},
+                avg_energy : {$avg: "$energy"},
+                avg_liveness : {$avg: "$liveness"},
+                avg_loudness : {$avg: "$loudness"},
+                avg_speechiness : {$avg: "$speechiness"},
+                avg_tempo : {$avg: "$tempo"}
+            }
+        }
+    ]).toArray(function (err,docs){
+        res.json(docs);
+    });  
+ });
+   
 console.log('Your Spotify Interface on 8888');
 app.listen(8888);

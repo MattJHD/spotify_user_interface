@@ -45,7 +45,7 @@ function displayTracks(tracks){
             //alert(this.id);
             
         });
-        getFeaturesForTrack(tracks[i]._id.track_id);
+        //getFeaturesForTrack(tracks[i]._id.track_id);
         allPlayed.appendChild(track);
     }
 }
