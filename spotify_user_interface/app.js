@@ -167,7 +167,7 @@ app.get("/dataTracks", function(req, res){
     SUIDB.collection('playedtracks').aggregate([
         { $group:
             { 
-                _id: { track_id: "$track.id", track_name: "$track.name", artist_name: "$track.artists.name", played_at: "$played_at", covers: "track.album.images"},
+                _id: { track_id: "$track.id", track_name: "$track.name", artist_name: "$track.artists.name", played_at: "$played_at", covers: "$track.album.images"},
                 somme: {$sum: 1}
             }
         }
@@ -206,7 +206,7 @@ app.get("/oneTrackFeatures", function(req, res){
     SUIDB.collection('features').aggregate([
         { $group:
             { 
-                _id: {track_id: "$id", },
+                _id: {track_id: "$id"},
                 avg_acousticness : {$avg: "$acousticness"},
                 avg_danceability : {$avg: "$danceability"},
                 avg_energy : {$avg: "$energy"},
