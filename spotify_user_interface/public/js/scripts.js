@@ -88,6 +88,7 @@ function generateChart(data){
     graph.innerHTML = "";
     graph.appendChild(canvas);
     //var ctx = canvas.getContext("radar-chart");
+    console.log(typeof(data.tempo));
     var chart = new Chart("radar-chart", {
         type: 'radar',
         data: {
@@ -101,13 +102,13 @@ function generateChart(data){
                     pointBorderColor: "#fff",
                     pointBackgroundColor: "rgba(179,181,198,1)",
                     data: [
-                        JSON.parse(data.acousticness*100),
-                        JSON.parse(data.danceability*100),
-                        JSON.parse(data.energy*100),
-                        JSON.parse(data.liveness*100),
-                        JSON.parse(Math.abs(data.loudness)),
-                        JSON.parse(data.speechiness*100),
-                        JSON.parse(data.tempo)
+                        JSON.parse(data.acousticness),
+                        JSON.parse(data.danceability),
+                        JSON.parse(data.energy),
+                        JSON.parse(data.liveness),
+                        JSON.parse(Math.abs(data.loudness)/60),
+                        JSON.parse(data.speechiness),
+                        JSON.parse(data.tempo/250)
                     ]        
                 } 
             ]
