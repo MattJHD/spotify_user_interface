@@ -37,16 +37,21 @@ function displayTracks(tracks){
     var allPlayed = document.getElementById("allPlayed");
     for(var i=0; i<tracks.length; i++){
         var track = document.createElement("div");
+        var cover = document.createElement("div");
         track.id = tracks[i]._id.track_id;
         track.className = tracks[i]._id.track_name;
         track.innerText = "Track : " +tracks[i]._id.track_name + " | Artist : " + tracks[i]._id.artist_name[0] + " | " + tracks[i]._id.played_at;
         track.addEventListener("click", function(){
             getOneFeature(this.id, this.className);
             //alert(this.id);
-            
         });
+        cover.style.cssText = "background-image:url(" + tracks[i]._id.covers[2].url + ");width:30px;height:30px;";
+        cover.className = "cover";
+        console.log(cover); 
         //getFeaturesForTrack(tracks[i]._id.track_id);
+        allPlayed.appendChild(cover);
         allPlayed.appendChild(track);
+        
     }
 }
 
@@ -342,7 +347,6 @@ alert('There was an error during the authentication');
                 },
                 success: function (res) {
                     itemsRecentlyPlayedPlaceholder.innerHTML = itemsRecentlyPlayedTemplate(res);
-                    console.log(res);
                     writeOnDB(res, "add-played-tracks");
                 }
             });
