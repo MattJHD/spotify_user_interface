@@ -47,8 +47,7 @@ function displayTracks(tracks){
         });
         cover.style.cssText = "background-image:url(" + tracks[i]._id.covers[2].url + ");width:30px;height:30px;";
         cover.className = "cover";
-        console.log(cover); 
-        //getFeaturesForTrack(tracks[i]._id.track_id);
+        getFeaturesForTrack(tracks[i]._id.track_id);
         allPlayed.appendChild(cover);
         allPlayed.appendChild(track);
         
