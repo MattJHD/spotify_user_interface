@@ -38,14 +38,14 @@ function displayTracks(tracks){
     for(var i=0; i<tracks.length; i++){
         var track = document.createElement("div");
         track.id = tracks[i]._id.track_id;
-        track.className = tracks[i]._id.track_id;
+        track.className = tracks[i]._id.track_name;
         track.innerText = "Track : " +tracks[i]._id.track_name + " | Artist : " + tracks[i]._id.artist_name[0] + " | " + tracks[i]._id.played_at;
         track.addEventListener("click", function(){
-            getOneFeature(this.id);
+            getOneFeature(this.id, this.className);
             //alert(this.id);
             
         });
-        //getFeaturesForTrack(tracks[i]._id.track_id);
+        getFeaturesForTrack(tracks[i]._id.track_id);
         allPlayed.appendChild(track);
     }
 }
@@ -62,23 +62,24 @@ function getAllTracksPlayed(){
 	}
 }
 
-function getOneFeature(idtrack){
+function getOneFeature(trackid, trackname){
     const req = new XMLHttpRequest();
-	req.open('GET', 'http://localhost:8888/oneTrackFeatures?idTrack=' + idtrack, false);
+	req.open('GET', 'http://localhost:8888/oneTrackFeatures?idTrack=' + trackid, false);
 	req.send(null);
 
 	if (req.status === 200) {
 		console.log(JSON.parse(req.responseText));
-		displayInfo(JSON.parse(req.responseText));
+        displayInfo(JSON.parse(req.responseText), trackname);
 	} else {
 		console.log("Status de la réponse: %d (%s)", req.status, req.statusText);
 	}
 }
 
-function displayInfo(data){
+function displayInfo(dataFeatures, trackname){
     var idTrack = document.getElementById("idTrack");
-    idTrack.innerText = "";
-    generateChart(data);
+    
+    idTrack.innerText = "Features de la piste : " + trackname;
+    generateChart(dataFeatures);
 }
 
 function generateChart(data){
@@ -95,7 +96,7 @@ function generateChart(data){
             labels: ["acousticness", "danceability", "energy", "liveness", "loudness", "speechiness", "tempo"],
             datasets: [
                 {
-                    label: "",
+                    label: "features",
                     fill: true,
                     backgroundColor: "rgba(179,181,198,0.2)",
                     borderColor: "rgba(179,181,198,1)",
@@ -116,7 +117,7 @@ function generateChart(data){
         options: {
             title: {
               display: true,
-              text: 'Features of track : ' + data.id
+              text: 'id' + data.id
             }
         }
     });
