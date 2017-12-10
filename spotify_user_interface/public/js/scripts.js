@@ -1,7 +1,8 @@
-var tracks, graph;
+var tracks, graph, polar;
 
 document.addEventListener("DOMContentLoaded", function(){
     graph = document.getElementById("graph");
+    
 });
 /**
  * Obtains parameters from the hash of the URL
@@ -26,8 +27,11 @@ error = params.error;
 function init(){
     tracks = getAllTracksPlayed();
     console.log(tracks);
+    average =getAverageListenedTrack();
+    console.log(average);
     if (tracks.length){
         displayTracks(tracks)
+        generatePolarChart(average);
     }else{
         console.log('no tracks in database')
     }
@@ -35,6 +39,7 @@ function init(){
 
 function displayTracks(tracks){
     var allPlayed = document.getElementById("allPlayed");
+    polar = document.getElementById("polar");
     for(var i=0; i<tracks.length; i++){
         var track = document.createElement("div");
         var cover = document.createElement("div");
@@ -50,7 +55,6 @@ function displayTracks(tracks){
         getFeaturesForTrack(tracks[i]._id.track_id);
         allPlayed.appendChild(cover);
         allPlayed.appendChild(track);
-        
     }
 }
 
@@ -93,7 +97,6 @@ function generateChart(data){
     graph.innerHTML = "";
     graph.appendChild(canvas);
     //var ctx = canvas.getContext("radar-chart");
-    console.log(typeof(data.tempo));
     var chart = new Chart("radar-chart", {
         type: 'radar',
         data: {
@@ -127,15 +130,64 @@ function generateChart(data){
     });
 };
 
+function generatePolarChart(data){
+    var canvas = document.createElement("canvas");
+    canvas.id = "polar-chart";
+    polar.innerHTML = "";
+    polar.appendChild(canvas);
+    console.log(polar);
+    var ctx = canvas.getContext('2d');
+    var mychart = new Chart(ctx, {
+        type: 'polarArea',
+        data: {
+            labels: ["acousticness", "danceability", "energy", "liveness", "loudness", "speechiness", "tempo"],
+            datasets: [
+                {
+                    label: "Profil",
+                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                    data: [
+                        JSON.parse(data[0].avg_acousticness),
+                        JSON.parse(data[0].avg_danceability),
+                        JSON.parse(data[0].avg_energy),
+                        JSON.parse(data[0].avg_liveness),
+                        JSON.parse(Math.abs(data[0].avg_loudness)/60),
+                        JSON.parse(data[0].avg_speechiness),
+                        JSON.parse(data[0].avg_tempo/250)
+                    ]        
+                } 
+            ]
+        },
+        options: {
+            title: {
+              display: true,
+              text: 'Moyenne sur l\'historique d\'écoute'
+            }
+        }
+    });
+}
+
 function getFeaturesForTrack(idtrack){
     const req = new XMLHttpRequest();
-    
     req.open('GET', 'https://api.spotify.com/v1/audio-features/' + idtrack, false);
     req.setRequestHeader("Authorization", 'Bearer ' + access_token);
 	req.send(null);
 
 	if (req.status === 200) {
-		writeOnDB(JSON.parse(req.responseText), "features-tracks");
+        writeOnDB(JSON.parse(req.responseText), "features-tracks");
+        //displayInfo(JSON.parse(req.responseText), trackname);
+	} else {
+		console.log("Status de la réponse: %d (%s)", req.status, req.statusText);
+	}
+}
+
+function getAverageListenedTrack(){
+    const req = new XMLHttpRequest();
+    req.open('GET', 'http://localhost:8888/averageListenedTracks', false);
+	req.send(null);
+
+	if (req.status === 200) {
+        console.log(JSON.parse(req.responseText));
+        return JSON.parse(req.responseText);
 	} else {
 		console.log("Status de la réponse: %d (%s)", req.status, req.statusText);
 	}
@@ -340,7 +392,7 @@ alert('There was an error during the authentication');
             itemsRecentlyPlayedPlaceholder = document.getElementById('recentlyPlayed');
 
             $.ajax({
-                url: 'https://api.spotify.com/v1/me/player/recently-played?limit=50',
+                url: 'https://api.spotify.com/v1/me/player/recently-played?limit=15',
                 headers: {
                     'Authorization': 'Bearer ' + access_token
                 },
@@ -351,7 +403,7 @@ alert('There was an error during the authentication');
             });
             setTimeout(function(){
                 fetchRecentlyPlayedTracks();
-            }, 10000);
+            }, 300000);
         };
         fetchRecentlyPlayedTracks();   
         ///////////////recently played///////////////////

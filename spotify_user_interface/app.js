@@ -149,6 +149,8 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
+////////// BEGINNING OF OUR API //////////
+
 app.post('/add-played-tracks', function(req, res){
   var params = req.body.items;
   SUIDB.collection('playedtracks').insert(params, function(){
