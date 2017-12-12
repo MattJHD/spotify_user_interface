@@ -69,6 +69,17 @@
               <div id="resultsSearch"></div>
             </div>
             <!-- search datas  -->
+            <!-- Track by id -->
+            <div>
+              <h1>Track by id</h1>
+              <p>Get Spotify catalog information for a single track identified by its unique Spotify ID.</p>
+              <form id="track-by-id-form">
+                <input type="text" id="trackId" value="" class="form-control" placeholder="Type a track id" />
+                <input type="submit" id="searchTrack" class="btn btn-primary" value="Search" />
+              </form>
+              <div id="trackById"></div>
+            </div>
+            <!-- Track by id  -->
             <!-- recently played -->
             <div>
               <h1>Recently played</h1>
@@ -201,6 +212,27 @@
           {{/each}}
         </script>
         <!-- search datas -->
+
+        <!-- track by id -->
+        <script id="track-by-id-template" type="text/x-handlebars-template">
+          <div class="media">
+              <div class="media-body">
+                <dl class="dl-horizontal">
+                  <dt>Id :</dt>
+                  <dd>{{id}}</dd>
+                  <dt>Name :</dt>
+                  <dd>{{name}}</dd>
+                  <dt>Track number :</dt>
+                  <dd>{{track_number}}</dd>
+                  <dt>Artist :</dt>
+                  <dd>{{artists.0.name}}</dd>
+                  <dt>Album:</dt>
+                  <dd>{{album.name}}</dd>
+                </dl>
+              </div>
+          </div>
+        </script>
+        <!-- track by id -->
       
         <!-- recently played -->
         <script id="recently-played-template" type="text/x-handlebars-template">

@@ -384,6 +384,29 @@ alert('There was an error during the authentication');
         }, false);
         ///////////////search datas///////////////////
 
+        ///////////////track by id///////////////////
+        var trackByIdSource = document.getElementById('track-by-id-template').innerHTML,
+        trackByIdTemplate = Handlebars.compile(trackByIdSource),
+        trackByIdPlaceholder = document.getElementById('trackById');
+
+        var searchTrackById = function (id) {
+        $.ajax({
+        url: 'https://api.spotify.com/v1/tracks/' + id,
+        headers: {
+            'Authorization': 'Bearer ' + access_token
+        },
+        success: function (response) {
+            trackByIdPlaceholder.innerHTML = trackByIdTemplate(response);
+            console.log(response);
+        }
+        });  
+        };
+        document.getElementById('track-by-id-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            searchTrackById(document.getElementById('trackId').value);
+            }, false);
+        ///////////////track by id///////////////////
+
         ///////////////recently played///////////////////
         var fetchRecentlyPlayedTracks = function(){  
             
